@@ -1,0 +1,33 @@
+.task {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    width: 100%;
+
+    padding: 8px;
+
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.task:hover {
+    background-color: #eeeeee;
+    cursor: pointer;
+}
+
+.backlog {
+    color: rgb(255, 129, 129);
+}
+
+.inProgress {
+    color: rgb(241, 241, 0);
+}
+
+.done {
+    color: rgb(104, 190, 104);
+}
+
+.assignee {
+    margin-left: auto;
+}
