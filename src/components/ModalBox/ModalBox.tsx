@@ -6,7 +6,7 @@ import {
   Button,
   TextField,
   MenuItem,
-  Box,
+  Box
 } from "@mui/material";
 import { IModalBoxFormInputs } from "./types/types";
 import { useForm, SubmitHandler } from "react-hook-form";
