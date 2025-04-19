@@ -5,18 +5,25 @@ import styles from "./Task.module.css";
 import { ITaskProps } from "./types/types";
 import PanoramaFishEyeIcon from "@mui/icons-material/PanoramaFishEye";
 
-export const Task = ({ id, title, status, assignee }: ITaskProps) => {
+export const Task = ({ id, title, boardId, status, assignee }: ITaskProps) => {
   const dispatch = useAppDispatch();
 
   const onTaskClick = () => {
-    dispatch(openModal({ isOpen: true, isNewTask: false }));
+    dispatch(
+      openModal({
+        isOpen: true,
+        isNewTask: false,
+        isIssues: true,
+        boardId: boardId,
+      })
+    );
     dispatch(getTask(id));
   };
 
   const statusClassName = () => {
-    if (status === 'Backlog') return styles.backlog;
-    if (status === 'InProgress') return styles.inProgress;
-    if (status === 'Done') return styles.done;
+    if (status === "Backlog") return styles.backlog;
+    if (status === "InProgress") return styles.inProgress;
+    if (status === "Done") return styles.done;
     return "";
   };
 

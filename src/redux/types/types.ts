@@ -61,6 +61,8 @@ export interface IBoardsState {
 export interface IModalPayload {
   isOpen: boolean;
   isNewTask: boolean;
+  isIssues?: boolean;
+  boardId?: number;
 }
 
 export interface IModalState {

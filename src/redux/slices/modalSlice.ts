@@ -5,6 +5,8 @@ const initialState: IModalState = {
   modal: {
     isOpen: false,
     isNewTask: false,
+    isIssues: false,
+    boardId: undefined,
   },
 };
 
@@ -19,6 +21,8 @@ export const modalSlice = createSlice({
       state.modal = {
         isOpen: false,
         isNewTask: false,
+        isIssues: false,
+        boardId: undefined,
       };
     },
   },

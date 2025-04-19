@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { createRequest } from "../../functions/createRequest";
 import styles from "./BoardPage.module.css";
@@ -31,9 +31,16 @@ export const BoardPage = () => {
     return tasks.filter((task) => task.status === status);
   };
 
-  const onTaskClick = (id: number) => {
-    dispatch(openModal({ isOpen: true, isNewTask: false }));
-    dispatch(getTask(id));
+  const onTaskClick = (taskId: number) => {
+    dispatch(
+      openModal({
+        isOpen: true,
+        isNewTask: false,
+        isIssues: false,
+        boardId: Number(id),
+      })
+    );
+    dispatch(getTask(taskId));
   };
 
   return (

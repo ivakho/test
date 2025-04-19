@@ -6,7 +6,7 @@ import {
   Button,
   TextField,
   MenuItem,
-  Box
+  Box,
 } from "@mui/material";
 import { IModalBoxFormInputs } from "./types/types";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -17,6 +17,7 @@ import { closeModal } from "../../redux/slices/modalSlice";
 import { Controller } from "react-hook-form";
 import { clearTask } from "../../redux/slices/taskSlice";
 import { getBoards } from "../../redux/slices/boardsSlice";
+import { useNavigate } from "react-router-dom";
 
 export const ModalBox = () => {
   const { users, usersLoading, usersErr } = useAppSelector(
@@ -25,7 +26,9 @@ export const ModalBox = () => {
   const { boards, boardsLoading, boardsErr } = useAppSelector(
     (state) => state.boards
   );
-  const { isOpen, isNewTask } = useAppSelector((state) => state.modal.modal);
+  const { isOpen, isNewTask, isIssues, boardId } = useAppSelector(
+    (state) => state.modal.modal
+  );
   const { task } = useAppSelector((state) => state.task);
 
   const {
@@ -50,6 +53,7 @@ export const ModalBox = () => {
     console.log(data);
 
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isOpen) {
@@ -59,11 +63,11 @@ export const ModalBox = () => {
   }, [isOpen]);
 
   useEffect(() => {
-    if (!isNewTask && task) {
+    if (!isNewTask && task && boardId) {
       const defaultValues = {
         title: task.title,
         description: task.description,
-        boardId: task.boardId,
+        boardId: boardId,
         priority: task.priority,
         status: task.status,
         assigneeId: task.assignee.id,
@@ -79,11 +83,23 @@ export const ModalBox = () => {
         assigneeId: 0,
       });
     }
-  }, [isNewTask, task]);
+  }, [isNewTask, task, boardId]);
 
   const closeDispatch = () => {
     dispatch(closeModal());
     dispatch(clearTask());
+  };
+
+  const onBoardPageOpen = () => {
+    if (boardId) {
+      console.log(boardId);
+      const name = task.boardName;
+      navigate(`/boards/${boardId}`, {
+        state: { name },
+      });
+      dispatch(closeModal());
+      dispatch(clearTask());
+    }
   };
 
   return (
@@ -196,6 +212,11 @@ export const ModalBox = () => {
           </DialogContent>
 
           <DialogActions>
+            {isIssues && (
+              <Button variant="contained" onClick={onBoardPageOpen}>
+                Перейти на доску
+              </Button>
+            )}
             <Button variant="contained" type="submit">
               {isNewTask ? "Создать" : "Обновить"}
             </Button>

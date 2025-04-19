@@ -25,25 +25,15 @@ export const Issues = () => {
     dispatch(openModal({ isOpen: true, isNewTask: true }));
   };
 
-  // const filteredTasks = search
-  //   ? tasks.filter((task) => {
-  //       const searchLower = search.toLowerCase();
-  //       const titleMatch = task.title?.toLowerCase().includes(searchLower);
-  //       const assigneeMatch = task.assignee?.fullName
-  //         ?.toLowerCase()
-  //         .includes(searchLower);
-  //       return titleMatch || assigneeMatch;
-  //     })
-  //   : tasks;
-
   const filteredTasks = tasks.filter((task) => {
-    const matchesSearch = !search
-      || task.title?.toLowerCase().includes(search.toLowerCase())
-      || task.assignee?.fullName?.toLowerCase().includes(search.toLowerCase());
-  
+    const matchesSearch =
+      !search ||
+      task.title?.toLowerCase().includes(search.toLowerCase()) ||
+      task.assignee?.fullName?.toLowerCase().includes(search.toLowerCase());
+
     const matchesStatus = status === "All" || task.status === status;
     const matchesBoard = boardId === null || task.boardId === boardId;
-  
+
     return matchesSearch && matchesStatus && matchesBoard;
   });
 
@@ -61,6 +51,7 @@ export const Issues = () => {
                 id={task.id}
                 title={task.title}
                 status={task.status}
+                boardId={task.boardId}
                 assignee={task.assignee.fullName}
               />
             ))}
