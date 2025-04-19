@@ -18,6 +18,9 @@ import { Controller } from "react-hook-form";
 import { clearTask } from "../../redux/slices/taskSlice";
 import { getBoards } from "../../redux/slices/boardsSlice";
 import { useNavigate } from "react-router-dom";
+import { createRequest } from "../../functions/createRequest";
+import { getTasks } from "../../redux/slices/tasksSlice";
+import { getBoardTasks } from "../../redux/slices/boardTasksSlice";
 
 export const ModalBox = () => {
   const { users, usersLoading, usersErr } = useAppSelector(
@@ -48,9 +51,6 @@ export const ModalBox = () => {
       assigneeId: 0,
     },
   });
-
-  const onSubmit: SubmitHandler<IModalBoxFormInputs> = (data) =>
-    console.log(data);
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -84,6 +84,40 @@ export const ModalBox = () => {
       });
     }
   }, [isNewTask, task, boardId]);
+
+  const onSubmit: SubmitHandler<IModalBoxFormInputs> = async (data) => {
+    if (isNewTask) {
+      const { status, ...updateData } = data;
+      const response = await createRequest(`/tasks/create`, {
+        method: "POST",
+        body: JSON.stringify(updateData),
+      });
+
+      if (response.ok) {
+        dispatch(getTasks());
+        dispatch(getBoardTasks(data.boardId));
+        dispatch(closeModal());
+        dispatch(clearTask());
+      }
+    }
+
+    if (!isNewTask && task.id) {
+      const { boardId, ...updateData } = data;
+      const response = await createRequest(`/tasks/update/${task.id}`, {
+        method: "PUT",
+        body: JSON.stringify(updateData),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result);
+        dispatch(getTasks());
+        dispatch(getBoardTasks(boardId));
+        dispatch(closeModal());
+        dispatch(clearTask());
+      }
+    }
+  };
 
   const closeDispatch = () => {
     dispatch(closeModal());
@@ -178,17 +212,19 @@ export const ModalBox = () => {
                   </TextField>
                 )}
               />
-              <Controller
-                control={control}
-                name="status"
-                render={({ field }) => (
-                  <TextField select label="Статус" fullWidth {...field}>
-                    <MenuItem value="Backlog">To do</MenuItem>
-                    <MenuItem value="InProgress">In progress</MenuItem>
-                    <MenuItem value="Done">Done</MenuItem>
-                  </TextField>
-                )}
-              />
+              {!isNewTask && (
+                <Controller
+                  control={control}
+                  name="status"
+                  render={({ field }) => (
+                    <TextField select label="Статус" fullWidth {...field}>
+                      <MenuItem value="Backlog">To do</MenuItem>
+                      <MenuItem value="InProgress">In progress</MenuItem>
+                      <MenuItem value="Done">Done</MenuItem>
+                    </TextField>
+                  )}
+                />
+              )}
               <Controller
                 control={control}
                 name="assigneeId"

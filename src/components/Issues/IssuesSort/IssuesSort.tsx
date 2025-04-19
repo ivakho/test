@@ -37,6 +37,7 @@ export const IssuesSort = () => {
         size="small"
         fullWidth
         name="status"
+        defaultValue="All"
         onChange={onChangeValue}
       >
         <MenuItem value="All">Все</MenuItem>
@@ -50,6 +51,7 @@ export const IssuesSort = () => {
         size="small"
         fullWidth
         name="board"
+        defaultValue="All"
         onChange={onChangeValue}
       >
         <MenuItem value="All">Все</MenuItem>

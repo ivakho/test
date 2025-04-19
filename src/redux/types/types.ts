@@ -74,3 +74,9 @@ export interface ISortState {
   status: string;
   boardId: number | null;
 }
+
+export interface IBoardTasksState {
+  boardTasks: ITask[];
+  boardTasksLoading: boolean;
+  boardTasksErr: string | undefined;
+}

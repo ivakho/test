@@ -1,34 +1,25 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
-import { createRequest } from "../../functions/createRequest";
 import styles from "./BoardPage.module.css";
-import { ITask } from "../../redux/types/types";
-import { useAppDispatch } from "../../hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { openModal } from "../../redux/slices/modalSlice";
 import { getTask } from "../../redux/slices/taskSlice";
+import { getBoardTasks } from "../../redux/slices/boardTasksSlice";
 
 export const BoardPage = () => {
   const { id } = useParams();
-  const [tasks, setTasks] = useState<ITask[]>([]);
+  const { boardTasks } = useAppSelector((state) => state.boardTasks);
 
   const location = useLocation();
   const state = location.state as { name?: string };
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    getTasks();
+    dispatch(getBoardTasks(Number(id)));
   }, [id]);
 
-  const getTasks = async () => {
-    const response = await createRequest("/boards/" + id, {});
-    if (response.ok) {
-      const result = await response.json();
-      setTasks(result.data);
-    }
-  };
-
   const getTasksByStatus = (status: string) => {
-    return tasks.filter((task) => task.status === status);
+    return boardTasks.filter((task) => task.status === status);
   };
 
   const onTaskClick = (taskId: number) => {
@@ -48,7 +39,7 @@ export const BoardPage = () => {
       <h1>{state?.name || "Проект"}</h1>
       <div className={styles.table}>
         <div className={styles.column}>
-          <div className={styles.title}>To Do</div>
+          <div className={styles.title}>To do</div>
           <div className={styles.content}>
             {getTasksByStatus("Backlog").map((item) => (
               <div
