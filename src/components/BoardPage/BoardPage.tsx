@@ -3,79 +3,86 @@ import { useParams, useLocation } from "react-router-dom";
 import { createRequest } from "../../functions/createRequest";
 import styles from "./BoardPage.module.css";
 import { ITask } from "../../redux/types/types";
+import { useAppDispatch } from "../../hooks/hooks";
+import { openModal } from "../../redux/slices/modalSlice";
+import { getTask } from "../../redux/slices/taskSlice";
 
 export const BoardPage = () => {
   const { id } = useParams();
   const [tasks, setTasks] = useState<ITask[]>([]);
-  const [tasksToDo, setTasksToDo] = useState<ITask[]>([]);
-  const [tasksInProgress, setTasksInProgress] = useState<ITask[]>([]);
-  const [tasksDone, setTasksIsDone] = useState<ITask[]>([]);
 
   const location = useLocation();
   const state = location.state as { name?: string };
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    request();
-  }, []);
+    getTasks();
+  }, [id]);
 
-  useEffect(() => {
-    const todo: ITask[] = [];
-    const inprogress: ITask[] = [];
-    const done: ITask[] = [];
-
-    tasks.forEach((task) => {
-      if (task.status === "Backlog") {
-        todo.push(task);
-      }
-
-      if (task.status === "InProgress") {
-        inprogress.push(task);
-      }
-
-      if (task.status === "Done") {
-        done.push(task);
-      }
-    });
-    setTasksToDo(todo);
-    setTasksInProgress(inprogress);
-    setTasksIsDone(done);
-  }, [tasks]);
-
-  const request = async () => {
+  const getTasks = async () => {
     const response = await createRequest("/boards/" + id, {});
-    if (response && response.ok) {
+    if (response.ok) {
       const result = await response.json();
       setTasks(result.data);
     }
   };
 
+  const getTasksByStatus = (status: string) => {
+    return tasks.filter((task) => task.status === status);
+  };
+
+  const onTaskClick = (id: number) => {
+    dispatch(openModal({ isOpen: true, isNewTask: false }));
+    dispatch(getTask(id));
+  };
+
   return (
     <div className={styles.board}>
-      <h1>{state.name}</h1>
+      <h1>{state?.name || "Проект"}</h1>
       <div className={styles.table}>
         <div className={styles.column}>
           <div className={styles.title}>To Do</div>
-          {tasksToDo.map((item) => (
-            <div className={styles.task} key={item.id}>
-              {item.title}
-            </div>
-          ))}
+          <div className={styles.content}>
+            {getTasksByStatus("Backlog").map((item) => (
+              <div
+                className={styles.task}
+                key={item.id}
+                onClick={() => onTaskClick(item.id)}
+              >
+                {item.title}
+              </div>
+            ))}
+          </div>
         </div>
+
         <div className={styles.column}>
-          <div className={styles.title}>InProgress</div>
-          {tasksInProgress.map((item) => (
-            <div className={styles.task} key={item.id}>
-              {item.title}
-            </div>
-          ))}
+          <div className={styles.title}>In progress</div>
+          <div className={styles.content}>
+            {getTasksByStatus("InProgress").map((item) => (
+              <div
+                className={styles.task}
+                key={item.id}
+                onClick={() => onTaskClick(item.id)}
+              >
+                {item.title}
+              </div>
+            ))}
+          </div>
         </div>
+
         <div className={styles.column}>
           <div className={styles.title}>Done</div>
-          {tasksDone.map((item) => (
-            <div className={styles.task} key={item.id}>
-              {item.title}
-            </div>
-          ))}
+          <div className={styles.content}>
+            {getTasksByStatus("Done").map((item) => (
+              <div
+                className={styles.task}
+                key={item.id}
+                onClick={() => onTaskClick(item.id)}
+              >
+                {item.title}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect } from "react";
+import { ChangeEvent, useEffect } from "react";
 import styles from "./IssuesSort.module.css";
 import { SearchInput } from "../../SearchInput/SearchInput";
 import { MenuItem, TextField } from "@mui/material";
@@ -52,7 +52,7 @@ export const IssuesSort = () => {
         name="board"
         onChange={onChangeValue}
       >
-        <MenuItem value='All'>Все</MenuItem>
+        <MenuItem value="All">Все</MenuItem>
         {boards.map((board) => (
           <MenuItem key={board.id} value={board.id}>
             {board.name}

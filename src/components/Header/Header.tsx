@@ -1,9 +1,7 @@
 import { ModalBox } from "../ModalBox/ModalBox";
 import { NavLink } from "react-router-dom";
 import styles from "./Header.module.css";
-import { useEffect, useState } from "react";
 import { Button } from "@mui/material";
-import { createRequest } from "../../functions/createRequest";
 import { useAppDispatch } from "../../hooks/hooks";
 import { openModal } from "../../redux/slices/modalSlice";
 
