@@ -67,6 +67,8 @@ export interface IModalState {
   modal: IModalPayload;
 }
 
-export interface ISearchState {
+export interface ISortState {
   search: string;
+  status: string;
+  boardId: number | null;
 }

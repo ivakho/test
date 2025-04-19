@@ -9,14 +9,6 @@
     padding: 10px;
 }
 
-.sort {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-
-    width: 100%;
-}
-
 .content {
     display: flex;
     flex-direction: column;

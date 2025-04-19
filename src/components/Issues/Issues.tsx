@@ -1,23 +1,15 @@
-import { ChangeEvent, useState, useEffect } from "react";
-import { TextField, InputAdornment, Button } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import { useEffect } from "react";
 import styles from "./Issues.module.css";
-import { IssuesPriority } from "./types/types";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { getTasks } from "../../redux/slices/tasksSlice";
 import { Task } from "../Task/Task";
 import { openModal } from "../../redux/slices/modalSlice";
-import { SearchInput } from "../SearchInput/SearchInput";
 import { ModalBox } from "../ModalBox/ModalBox";
+import { IssuesSort } from "./IssuesSort/IssuesSort";
+import { Button } from "@mui/material";
 
 export const Issues = () => {
-  const [priority, setPriority] = useState();
-  const { search } = useAppSelector((state) => state.search);
-
-  const handleFilterChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    // setPriority(e.target.value) as string
-  };
+  const { search, status, boardId } = useAppSelector((state) => state.sort);
 
   const dispatch = useAppDispatch();
 
@@ -33,37 +25,31 @@ export const Issues = () => {
     dispatch(openModal({ isOpen: true, isNewTask: true }));
   };
 
-  const filteredTasks = search
-    ? tasks.filter((task) => {
-        const searchLower = search.toLowerCase();
-        const titleMatch = task.title?.toLowerCase().includes(searchLower);
-        const assigneeMatch = task.assignee?.fullName
-          ?.toLowerCase()
-          .includes(searchLower);
-        return titleMatch || assigneeMatch;
-      })
-    : tasks;
+  // const filteredTasks = search
+  //   ? tasks.filter((task) => {
+  //       const searchLower = search.toLowerCase();
+  //       const titleMatch = task.title?.toLowerCase().includes(searchLower);
+  //       const assigneeMatch = task.assignee?.fullName
+  //         ?.toLowerCase()
+  //         .includes(searchLower);
+  //       return titleMatch || assigneeMatch;
+  //     })
+  //   : tasks;
+
+  const filteredTasks = tasks.filter((task) => {
+    const matchesSearch = !search
+      || task.title?.toLowerCase().includes(search.toLowerCase())
+      || task.assignee?.fullName?.toLowerCase().includes(search.toLowerCase());
+  
+    const matchesStatus = status === "All" || task.status === status;
+    const matchesBoard = boardId === null || task.boardId === boardId;
+  
+    return matchesSearch && matchesStatus && matchesBoard;
+  });
 
   return (
     <div className={styles.issues}>
-      <div className={styles.sort}>
-        <SearchInput />
-        <FormControl fullWidth size="small">
-          <InputLabel id="filter-priority">Фильтры</InputLabel>
-          <Select
-            labelId="filter-priority"
-            value={priority}
-            label="Приоритет"
-            defaultValue=""
-            // onChange={handleFilterChange(e.target)}
-          >
-            <MenuItem value={IssuesPriority.All}>Все</MenuItem>
-            <MenuItem value={IssuesPriority.Low}>Низкий</MenuItem>
-            <MenuItem value={IssuesPriority.Medium}>Средний</MenuItem>
-            <MenuItem value={IssuesPriority.High}>Высокий</MenuItem>
-          </Select>
-        </FormControl>
-      </div>
+      <IssuesSort />
       <div className={styles.content}>
         <div className={styles.tasks}>
           {tasksLoading && <div>Загрузка...</div>}

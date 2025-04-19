@@ -4,7 +4,7 @@ import tasksReducer from "../slices/tasksSlice";
 import taskReducer from "../slices/taskSlice";
 import boardsReducer from "../slices/boardsSlice";
 import modalReducer from "../slices/modalSlice";
-import searchReducer from "../slices/searchSlice";
+import sortReducer from "../slices/sortSlice";
 
 export const store = configureStore({
   reducer: {
@@ -13,7 +13,7 @@ export const store = configureStore({
     task: taskReducer,
     boards: boardsReducer,
     modal: modalReducer,
-    search: searchReducer,
+    sort: sortReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });

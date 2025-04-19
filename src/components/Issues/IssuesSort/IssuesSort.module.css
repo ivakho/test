@@ -1,0 +1,7 @@
+.sort {
+    display: grid;
+    grid-template-columns: 1fr 250px 250px;
+    gap: 10px;
+
+    width: 100%;
+}

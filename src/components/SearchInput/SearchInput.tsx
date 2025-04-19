@@ -3,7 +3,7 @@ import { TextField, InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import styles from "./SearchInput.module.css";
 import { useAppDispatch } from "../../hooks/hooks";
-import { changeSearch } from "../../redux/slices/searchSlice";
+import { changeSearch } from "../../redux/slices/sortSlice";
 
 export const SearchInput = () => {
   const [input, setInput] = useState("");
